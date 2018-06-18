@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:vlt="http://www.day.com/jcr/vault/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:created="{Date}2018-06-18T15:09:38.616-03:00"
+    jcr:createdBy="Visual Studio AEM Sync"
+    jcr:description=""
+    jcr:lastModified="{Date}2018-06-18T15:09:38.616-03:00"
+    jcr:lastModifiedBy="Visual Studio AEM Sync"
+    jcr:primaryType="vlt:PackageDefinition"
+    buildCount="1"
+    builtWith="Adobe Experience Manager-6.1.0.SP2-CFP14"
+    fixedBugs=""
+    group="vs_aemsync"
+    lastUnwrapped="{Date}2018-06-18T15:09:38.616-03:00"
+    lastUnwrappedBy="Visual Studio AEM Sync"
+    lastWrapped="{Date}2018-06-18T15:09:38.616-03:00"
+    lastWrappedBy="Visual Studio AEM Sync"
+    name="vsaemsync"
+    providerLink=""
+    providerName=""
+    providerUrl=""
+    testedWith=""
+    version="">
+</jcr:root>
