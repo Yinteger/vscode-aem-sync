@@ -9,12 +9,8 @@ class Packager {
     //Takes in File Location(s) and builds a single deployable aem package
     buildPackage(paths) {
         //Build an AEM Package! Yay!
-        let archive = archiver('zip', {
-            zlib: {
-                level: 9
-            }
-        });
-        var output = fs.createWriteStream(__dirname + '/sync.zip');
+        let archive = archiver('zip');
+        var output = fs.createWriteStream(__dirname + '\\sync.zip');
         archive.pipe(output);
 
         //Add base package files
@@ -40,6 +36,7 @@ class Packager {
 
         console.log("finalize"); 
         archive.finalize();
+        return __dirname + '\\sync.zip';
     }
     //Build the filter.xml content
     buildFilter(paths) {

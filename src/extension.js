@@ -9,23 +9,33 @@ var packager = require("./packager.js");
 // your extension is activated the very first time the command is executed
 function activate(context) {
     var config = vscode.workspace.getConfiguration('aemsync');
-    var target = config.get("server");
+    var host = config.get("host");
+    var port = config.get("port");
     var timeout;
+    var statusDisposable;
     //Start watching
     watcher.start(vscode.workspace.workspaceFolders);
 
     watcher.on("change", (file, fullPath) => {
-        vscode.window.setStatusBarMessage('Syncing to AEM', new Promise((resolve, reject) => {
-            //Sync simply the new file
-            console.log("changed ", file, fullPath);
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
-                packager.buildPackage([fullPath]);
-                packager.clearPackage();
-                resolve();
-                vscode.window.setStatusBarMessage('Changes synced to AEM', 3000);
-            }, 1000);
-        }));
+        //@todo: Create a status wrapper
+        if (statusDisposable) {
+            statusDisposable.dispose();
+        }
+        statusDisposable = vscode.window.setStatusBarMessage('Syncing to AEM');
+        //Sync simply the new file
+        console.log("changed ", file, fullPath);
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            var packagePath = packager.buildPackage([fullPath]);
+            //packager.clearPackage();
+            Sync.syncPackage(packagePath, host, port, "admin", "admin").then(() => {
+                //Yay
+            }).catch(() => {
+                //Ohhh no
+            })
+            statusDisposable.dispose();
+            vscode.window.setStatusBarMessage('Changes synced to AEM', 3000);
+        }, 1000);
     });
     
     watcher.on('rename', (file) => {
@@ -35,7 +45,7 @@ function activate(context) {
 
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
-    console.log('AEM-Sync now running targetting ', target);
+    console.log('AEM-Sync now running targetting ', host);
 
     // The command has been defined in the package.json file
     // Now provide the implementation of the command with  registerCommand

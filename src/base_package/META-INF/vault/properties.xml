@@ -3,16 +3,16 @@
 <properties>
 <comment>FileVault Package Properties</comment>
 <entry key="createdBy">Visual Studio AEM Sync</entry>
-<entry key="name">testpackage</entry>
-<entry key="lastModified">2018-06-18T15:09:38.616-03:00</entry>
-<entry key="lastModifiedBy">admin</entry>
-<entry key="created">2018-06-18T15:09:38.831-03:00</entry>
-<entry key="buildCount">1</entry>
-<entry key="version"/>
-<entry key="dependencies"/>
-<entry key="packageFormatVersion">2</entry>
-<entry key="description"/>
-<entry key="lastWrapped">2018-06-18T15:09:38.616-03:00</entry>
-<entry key="lastWrappedBy">admin</entry>
-<entry key="group">aem-sync</entry>
+<!--<entry key="name">cqsync-copy</entry>-->
+<!--<entry key="lastModified">2014-06-25T10:14:56.742+02:00</entry>-->
+<!--<entry key="lastModifiedBy">admin</entry>-->
+<!--<entry key="created">2014-06-25T10:14:57.020+02:00</entry>-->
+<!--<entry key="buildCount">3</entry>-->
+<!--<entry key="version">1.0</entry>-->
+<!--<entry key="dependencies"/>-->
+<!--<entry key="packageFormatVersion">2</entry>-->
+<!--<entry key="description"/>-->
+<!--<entry key="lastWrapped">2014-06-25T10:14:56.742+02:00</entry>-->
+<entry key="group">vs-aemsync</entry>
+<!--<entry key="lastWrappedBy">admin</entry>-->
 </properties>

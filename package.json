@@ -21,10 +21,15 @@
             "type": "object",
             "title": "AEM-Sync configuration",
             "properties": {
-                "aemsync.server": {
+                "aemsync.host": {
                     "type": "string",
-                    "default": "http://admin:admin@127.0.0.1:4502",
-                    "description": "The target AEM server to sync changes to (Defaults to http://admin:admin@127.0.0.1:4502)"
+                    "default": "localhost",
+                    "description": "The target AEM server to sync changes to (Defaults to http://127.0.0.1:4502)"
+                },
+                "aemsync.port": {
+                    "type": "number",
+                    "default": 4502,
+                    "description": "The Port AEM server is running on"
                 },
                 "aemsync.path": {
                     "type": "string",
@@ -53,6 +58,10 @@
     },
     "dependencies": {
         "archiver": "^2.1.1",
-        "find": "^0.2.9"
+        "find": "^0.2.9",
+        "form-data": "^2.3.2",
+        "request": "^2.87.0",
+        "request-promise": "^4.2.2",
+        "string_decoder": "^1.1.1"
     }
 }
