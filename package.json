@@ -59,7 +59,8 @@
     "dependencies": {
         "archiver": "^2.1.1",
         "find": "^0.2.9",
-        "form-data": "^2.3.2",
+        "form-data": "^0.2.0",
+        "graceful-fs": "^4.1.11",
         "request": "^2.87.0",
         "request-promise": "^4.2.2",
         "string_decoder": "^1.1.1"

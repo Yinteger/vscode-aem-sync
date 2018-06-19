@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const FILTER_PREFIX = '<?xml version="1.0" encoding="UTF-8"?><workspaceFilter version="1.0">';
 const FILTER_SUFFIX = '</workspaceFilter>';
+const os = require('os')
 
 //Packages up changes and deploys to AEM
 class Packager {
@@ -10,7 +11,7 @@ class Packager {
     buildPackage(paths) {
         //Build an AEM Package! Yay!
         let archive = archiver('zip');
-        var output = fs.createWriteStream(__dirname + '\\sync.zip');
+        var output = fs.createWriteStream(path.join(os.tmpdir(), "sync.zip"));
         archive.pipe(output);
 
         //Add base package files
@@ -36,7 +37,7 @@ class Packager {
 
         console.log("finalize"); 
         archive.finalize();
-        return __dirname + '\\sync.zip';
+        return path.join(os.tmpdir(), "sync.zip");
     }
     //Build the filter.xml content
     buildFilter(paths) {
