@@ -1,68 +1,69 @@
 {
-    "name": "aemsync",
-    "displayName": "AEM-Sync",
-    "description": "A Visual Studio Code extension to sync changes to an AEM (Adobe Experience Manager) server.",
-    "version": "0.0.1",
-    "publisher": "yuniyasha",
-    "engines": {
-        "vscode": "^1.24.0"
-    },
-    "categories": [
-        "Other"
-    ],
-    "activationEvents": [
-        "onCommand:extension.sayHello",
-        "workspaceContains:**/jcr_root",
-        "*"
-    ],
-    "main": "./src/extension",
-    "contributes": {
-        "configuration": {
-            "type": "object",
-            "title": "AEM-Sync configuration",
-            "properties": {
-                "aemsync.host": {
-                    "type": "string",
-                    "default": "localhost",
-                    "description": "The target AEM server to sync changes to (Defaults to http://127.0.0.1:4502)"
-                },
-                "aemsync.port": {
-                    "type": "number",
-                    "default": 4502,
-                    "description": "The Port AEM server is running on"
-                },
-                "aemsync.path": {
-                    "type": "string",
-                    "default": false,
-                    "description": "The path to watch for file changes for (Defaults to jcr_root dirs that are detected)"
-                }
-            }
+  "name": "aemsync",
+  "displayName": "AEM-Sync",
+  "description": "A Visual Studio Code extension to sync changes to an AEM (Adobe Experience Manager) server.",
+  "version": "0.0.1",
+  "publisher": "yuniyasha",
+  "engines": {
+    "vscode": "^1.24.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:extension.sayHello",
+    "workspaceContains:**/jcr_root",
+    "*"
+  ],
+  "main": "./src/extension",
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "AEM-Sync configuration",
+      "properties": {
+        "aemsync.host": {
+          "type": "string",
+          "default": "localhost",
+          "description": "The target AEM server to sync changes to (Defaults to http://127.0.0.1:4502)"
         },
-        "commands": [
-            {
-                "command": "extension.sayHello",
-                "title": "Hello World"
-            }
-        ]
+        "aemsync.port": {
+          "type": "number",
+          "default": 4502,
+          "description": "The Port AEM server is running on"
+        },
+        "aemsync.path": {
+          "type": "string",
+          "default": false,
+          "description": "The path to watch for file changes for (Defaults to jcr_root dirs that are detected)"
+        }
+      }
     },
-    "scripts": {
-        "postinstall": "node ./node_modules/vscode/bin/install",
-        "test": "node ./node_modules/vscode/bin/test"
-    },
-    "devDependencies": {
-        "typescript": "^2.6.1",
-        "vscode": "^1.1.6",
-        "eslint": "^4.11.0",
-        "@types/node": "^7.0.43",
-        "@types/mocha": "^2.2.42"
-    },
-    "dependencies": {
-        "archiver": "^2.1.1",
-        "find": "^0.2.9",
-        "form-data": "^0.2.0",
-        "graceful-fs": "^4.1.11",
-        "request": "^2.87.0",
-        "request-promise": "^4.2.2",
-        "string_decoder": "^1.1.1"
-    }
+    "commands": [
+      {
+        "command": "extension.sayHello",
+        "title": "Hello World"
+      }
+    ]
+  },
+  "scripts": {
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "node ./node_modules/vscode/bin/test"
+  },
+  "devDependencies": {
+    "typescript": "^2.6.1",
+    "vscode": "^1.1.6",
+    "eslint": "^4.11.0",
+    "@types/node": "^7.0.43",
+    "@types/mocha": "^2.2.42"
+  },
+  "dependencies": {
+    "archiver": "^2.1.1",
+    "find": "^0.2.9",
+    "form-data": "^0.2.0",
+    "graceful-fs": "^4.1.11",
+    "request": "^2.87.0",
+    "request-promise": "^4.2.2",
+    "string_decoder": "^1.1.1",
+    "utf8": "^3.0.0"
+  }
 }

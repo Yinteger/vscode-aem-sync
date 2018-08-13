@@ -1,19 +1,25 @@
 //Sync a package to the AEM server
-const PACKAGEMGR_PATH = "/crx/packmgr/service.jsp";
+var PACKAGEMGR_PATH = "/crx/packmgr/service.jsp";
 const fs = require('fs');
 var rp = require('request-promise');
 rp.debug = true;
 const parseUrl = require('url').parse
 const http = require('http');
 const querystring = require('querystring');
+const utf8 = require('utf8');
+const { StringDecoder } = require('string_decoder');
 
 class Sync {
     syncPackage(packagePath, host, port, username, password) {
+        port = 3000;
+        //PACKAGEMGR_PATH = "/";
         var url = parseUrl("http://" + username + ":" + password + "@" + host + ":" + port + PACKAGEMGR_PATH);
         var auth = Buffer.from(url.auth).toString('base64');
         var cleanURL = "http://" + url.host + url.path;
         console.log('Basic ' + auth);
         console.log(cleanURL);
+        packagePath = "C:\\Users\\kywil\\AppData\\Local\\Temp\\sync2.zip";
+        console.log(packagePath); 
         // return new Promise((resolve, reject) => {
         //     rp({uri: cleanURL, formData: {
         //         "file": fs.createReadStream(packagePath),
@@ -25,8 +31,8 @@ class Sync {
         //         console.error(err);
         //     })
         // });
-        var body = "----------------------------553807080757934961515820\r\nContent-Disposition: form-data; name=\"install\"\r\n\r\ntrue\r\n----------------------------553807080757934961515820\r\nContent-Disposition: form-data; name=\"force\"\r\n\r\ntrue\r\n----------------------------553807080757934961515820\r\nContent-Disposition: form-data; name=\"file\"; filename=\"sync.zip\"\r\nContent-Type: application/zip\r\n\r\n";
-        body = Buffer.from(body, 'utf-8');
+        var preString = "----------------------------553807080757934961515820\r\nContent-Disposition: form-data; name=\"install\"\r\n\r\ntrue\r\n----------------------------553807080757934961515820\r\nContent-Disposition: form-data; name=\"force\"\r\n\r\ntrue\r\n----------------------------553807080757934961515820\r\nContent-Disposition: form-data; name=\"file\"; filename=\"sync.zip\"\r\nContent-Type: application/zip\r\n\r\n";
+        // body = Buffer.from(body, 'utf-8');
         var fileString = "";
         var readStream = fs.createReadStream(packagePath);
         readStream.on('readable', (buffer) => {
@@ -35,13 +41,24 @@ class Sync {
                 fileString += chunk;
             }
         });
-        readStream.on('end', () => {
-            body+= Buffer.from(fileString, 'utf-8');
-            body += Buffer.from("\r\n----------------------------553807080757934961515820--\r\n", "utf-8");
+        fs.readFile(packagePath, function (err, fileString) {
+            if (err) {
+                console.error(err);
+            }
+            var body = Buffer.concat([
+                Buffer.from("----------------------------553807080757934961515820\r\nContent-Disposition: form-data; name=\"install\"\r\n\r\ntrue\r\n----------------------------553807080757934961515820\r\nContent-Disposition: form-data; name=\"force\"\r\n\r\ntrue\r\n----------------------------553807080757934961515820\r\nContent-Disposition: form-data; name=\"file\"; filename=\"sync.zip\"\r\nContent-Type: application/zip\r\n\r\n", "utf-8"),
+                new Buffer(fileString, 'binary'),
+                Buffer.from("\r\n----------------------------553807080757934961515820--\r\n", "utf-8"),
+            ]);
+            console.log(fileString);
+            Buffer.compare(new Buffer(fileString.toString('base64'),'base64') , fileString) === 0 ? console.log("Buffer is valid") : console.log("Buffer invalidated the data...");
+            // body+= fileString.toString('base64');
+            var postString = Buffer.from("\r\n----------------------------553807080757934961515820--\r\n", "utf-8");
             //File Contents to body
             const options = {
                 hostname: "localhost",
                 port: 4502,
+                encoding: null,
                 path: PACKAGEMGR_PATH,
                 method: "POST",
                 auth: "admin:admin",
