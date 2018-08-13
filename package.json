@@ -11,7 +11,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:extension.sayHello",
+    "onCommand:aemsync.sayHello",
     "workspaceContains:**/jcr_root",
     "*"
   ],
@@ -40,10 +40,30 @@
     },
     "commands": [
       {
-        "command": "extension.sayHello",
-        "title": "Hello World"
+        "command": "aemsync.syncFromAEM",
+        "title": "Sync file from AEM"
+      },
+      {
+        "command": "aemsync.syncToAEM",
+        "title": "Sync file to AEM"
       }
-    ]
+    ],
+    "menus": {
+      "commandPalette": [{
+        "command": "aemsync.syncFromAEM",
+        "when": "resourceFilename == thisshouldneverexist"
+      }, {
+        "command": "aemsync.syncToAEM",
+        "when": "resourceFilename == thisshouldneverexist"
+      }],
+      "explorer/context": [{
+        "group": "aemsync",
+        "command": "aemsync.syncFromAEM"
+      }, {
+        "group": "aemsync",
+        "command": "aemsync.syncToAEM"
+      }]
+    }
   },
   "scripts": {
     "postinstall": "node ./node_modules/vscode/bin/install",
@@ -58,12 +78,6 @@
   },
   "dependencies": {
     "archiver": "^2.1.1",
-    "find": "^0.2.9",
-    "form-data": "^0.2.0",
-    "graceful-fs": "^4.1.11",
-    "request": "^2.87.0",
-    "request-promise": "^4.2.2",
-    "string_decoder": "^1.1.1",
-    "utf8": "^3.0.0"
+    "find": "^0.2.9"
   }
 }

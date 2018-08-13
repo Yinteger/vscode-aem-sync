@@ -13,9 +13,10 @@ function activate(context) {
     var port = config.get("port");
     var timeout;
     var statusDisposable;
+    var queue = [];//Queue of files that need to be synced
     //Start watching
     watcher.start(vscode.workspace.workspaceFolders);
-
+    vscode.window.setStatusBarMessage('AEM Sync now watching files', 7500);
     watcher.on("change", (file, fullPath) => {
         //@todo: Create a status wrapper
         if (statusDisposable) {
@@ -24,17 +25,20 @@ function activate(context) {
         statusDisposable = vscode.window.setStatusBarMessage('Syncing to AEM');
         //Sync simply the new file
         console.log("changed ", file, fullPath);
+        queue.push({file, fullPath});
         clearTimeout(timeout);
+
         timeout = setTimeout(() => {
-            var packagePath = packager.buildPackage([fullPath]);
-            //packager.clearPackage();
-            Sync.syncPackage(packagePath, host, port, "admin", "admin").then(() => {
-                //Yay
-            }).catch(() => {
-                //Ohhh no
-            })
-            statusDisposable.dispose();
-            vscode.window.setStatusBarMessage('Changes synced to AEM', 3000);
+            packager.buildPackage([fullPath]).then((packagePath) => {
+                Sync.syncPackage(packagePath, host, port, "admin", "admin").then(() => {
+                    statusDisposable.dispose();
+                    vscode.window.setStatusBarMessage('Changes synced to AEM', 3000);
+                }, (error) => {
+                    vscode.window.showErrorMessage(error);
+                })
+            }, (error) => {
+                vscode.window.showErrorMessage(error);
+            });
         }, 1000);
     });
     

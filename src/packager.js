@@ -9,35 +9,44 @@ const os = require('os')
 class Packager {
     //Takes in File Location(s) and builds a single deployable aem package
     buildPackage(paths) {
-        //Build an AEM Package! Yay!
-        let archive = archiver('zip');
-        var output = fs.createWriteStream(path.join(os.tmpdir(), "sync.zip"));
-        archive.pipe(output);
+        return new Promise((resolve, reject) => {
+            //Build an AEM Package! Yay!
+            let archive = archiver('zip');
+            var outputPath = path.join(os.tmpdir(), "sync.zip");
+            var output = fs.createWriteStream(outputPath);
+            archive.pipe(output);
 
-        //Add base package files
-        archive.directory(__dirname + '/base_package/', false);
-        
-        //Build Filter.xml and add it
-        archive.append(Buffer.from(this.buildFilter(paths)), {name: "META-INF/vault/filter.xml"});
+            //Add base package files
+            archive.directory(__dirname + '/base_package/', false);
+            
+            //Build Filter.xml and add it
+            archive.append(Buffer.from(this.buildFilter(paths)), {name: "META-INF/vault/filter.xml"});
 
-        //Add all the actual files
-        paths.forEach((_path) => {
-            archive.file(_path, {name: "jcr_root" + this.convertPathToAem(_path)});
+            //Add all the actual files
+            paths.forEach((_path) => {
+                archive.file(_path, {name: "jcr_root" + this.convertPathToAem(_path)});
 
-            var dir = path.dirname(_path);
-            while (dir) {
-                if (fs.existsSync(dir + "\\.content.xml")) {
-                    archive.file(dir + "\\.content.xml", {name: "jcr_root" + this.convertPathToAem(dir + "\\.content.xml")});
+                var dir = path.dirname(_path);
+                while (dir) {
+                    if (fs.existsSync(dir + "\\.content.xml")) {
+                        archive.file(dir + "\\.content.xml", {name: "jcr_root" + this.convertPathToAem(dir + "\\.content.xml")});
+                    }
+                    var splitDir = dir.split("\\");
+                    dir = splitDir.slice(0, splitDir.length - 1).join("\\");
                 }
-                var splitDir = dir.split("\\");
-                dir = splitDir.slice(0, splitDir.length - 1).join("\\");
-            }
-           
-        });
+            
+            });
 
-        console.log("finalize"); 
-        archive.finalize();
-        return path.join(os.tmpdir(), "sync.zip");
+            archive.on("close", () => {
+                console.log("Zip file created");
+            });
+
+            archive.on("end", () => {
+                resolve(outputPath);
+            });
+
+            archive.finalize();
+        });
     }
     //Build the filter.xml content
     buildFilter(paths) {
