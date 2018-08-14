@@ -2,7 +2,7 @@
   "name": "aemsync",
   "displayName": "AEM-Sync",
   "description": "Sync changes to AEM automatically (Alpha release)",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "Yinkai15",
   "preview": true,
   "keywords": [

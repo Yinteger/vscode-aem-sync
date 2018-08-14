@@ -61,6 +61,7 @@ function activate(context) {
                         output.appendLine("Synced " + queueItem + " to AEM");
                     });
                     vscode.window.setStatusBarMessage('Changes synced to AEM', 3000);
+                    packager.clearPackage();
                 }, (error) => {
                     console.error(error);
                     statusDisposable.dispose();
