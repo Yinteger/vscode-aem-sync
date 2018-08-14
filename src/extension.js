@@ -4,6 +4,7 @@ const vscode = require('vscode');
 var watcher = require("./watcher.js");
 var Sync = require("./sync.js");
 var packager = require("./packager.js");
+var Queue = require("./queue.js");
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -13,31 +14,60 @@ function activate(context) {
     var port = config.get("port");
     var timeout;
     var statusDisposable;
-    var queue = [];//Queue of files that need to be synced
+    var queue = new Queue();//Queue of files that need to be synced
+
+    var output = vscode.window.createOutputChannel("aemsync");
+    output.appendLine("AEM Sync started... Searching for jcr_root");
     //Start watching
-    watcher.start(vscode.workspace.workspaceFolders);
+    watcher.start(vscode.workspace.workspaceFolders).then((watchedPaths) => {
+        console.log(watchedPaths);
+        if (watchedPaths.length > 0) {
+            watchedPaths.forEach((watchedPath) => {
+                output.appendLine("AEM Sync now watching for changes inside  " + watchedPath);
+            });
+        } else {
+            output.appendLine("AEM Sync was unable to find any jcr_root directories!");
+        }
+    });
     vscode.window.setStatusBarMessage('AEM Sync now watching files', 7500);
+
+    output.show();
     watcher.on("change", (file, fullPath) => {
-        //@todo: Create a status wrapper
         if (statusDisposable) {
             statusDisposable.dispose();
         }
         statusDisposable = vscode.window.setStatusBarMessage('Syncing to AEM');
         //Sync simply the new file
-        console.log("changed ", file, fullPath);
-        queue.push({file, fullPath});
+        //console.log("changed ", file, fullPath);
+        if (!queue.has(fullPath)) {
+            queue.addItem(fullPath);   
+        }
         clearTimeout(timeout);
 
         timeout = setTimeout(() => {
-            packager.buildPackage([fullPath]).then((packagePath) => {
+            var queueItems = queue.empty();
+            //Debug
+            //queueItems = ["c:\\projects\\aem\\alc\\ui.apps\\src\\main\\content\\jcr_root\\apps\\alc\\components\\accordion\\accordion.html", "c:\\projects\\aem\\alc\\ui.apps\\src\\main\\content\\jcr_root\\apps\\alc\\components\\accordion\\accordion.js", "c:\\projects\\aem\\alc\\ui.apps\\src\\main\\content\\jcr_root\\apps\\alc\\components\\alert\\clientlibs\\js\\alert.js"];
+            
+            output.appendLine("Attempting to sync " + queueItems.length + " item(s) to AEM");
+            console.log("Syncing queue to AEM", queueItems);
+            packager.buildPackage(queueItems).then((packagePath) => {
                 Sync.syncPackage(packagePath, host, port, "admin", "admin").then(() => {
                     statusDisposable.dispose();
+                    console.log("Queue synced successfully");
+                    queueItems.forEach((queueItem) => {
+                        output.appendLine("Synced " + queueItem + " to AEM");
+                    });
                     vscode.window.setStatusBarMessage('Changes synced to AEM', 3000);
                 }, (error) => {
+                    console.error(error);
+                    statusDisposable.dispose();
                     vscode.window.showErrorMessage(error);
                 })
             }, (error) => {
+                statusDisposable.dispose();
                 vscode.window.showErrorMessage(error);
+                console.error(error);
             });
         }, 1000);
     });

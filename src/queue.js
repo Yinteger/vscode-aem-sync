@@ -4,7 +4,7 @@ class Queue {
     }
 
     //Return & Empty the queue
-    emptyQueue () {
+    empty () {
         var items = this.items.splice(0);
         this.items = [];
         return items;
@@ -14,6 +14,10 @@ class Queue {
     addItem (item) {
         this.items.push(item);
     }
+
+    has (item) {
+        return this.items.indexOf(item) > -1;
+    }
 }
 
-module.exports = new Queue();
+module.exports = Queue;

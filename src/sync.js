@@ -6,6 +6,7 @@ const http = require('http');
 class Sync {
     syncPackage(packagePath, host, port, username, password) {
         return new Promise((resolve, reject) => {
+            console.log(packagePath);
             fs.readFile(packagePath, function (err, fileBuffer) {
                 if (err) {
                     console.error("Error reading package zip \r\n", err);
@@ -43,6 +44,7 @@ class Sync {
                     res.on('end', () => {
                         //Check for a specific string since AEM returns 200 even on errors
                         if (responseBody.indexOf('Package imported.') > -1) {
+                            console.log(responseBody);
                             resolve();
                         } else {
                             console.error("Error importing Package to AEM: \r\n", responseBody);

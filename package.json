@@ -1,9 +1,15 @@
 {
   "name": "aemsync",
   "displayName": "AEM-Sync",
-  "description": "A Visual Studio Code extension to sync changes to an AEM (Adobe Experience Manager) server.",
-  "version": "0.0.1",
+  "description": "Sync changes to AEM automatically (Alpha release)",
+  "version": "0.1.0",
   "publisher": "yuniyasha",
+  "preview": true,
+  "keywords": [
+    "aem",
+    "adobe experience manager"
+  ],
+  "icon": "icon.jpg",
   "engines": {
     "vscode": "^1.24.0"
   },
@@ -15,6 +21,7 @@
     "workspaceContains:**/jcr_root",
     "*"
   ],
+  "homepage": "https://github.com/Yinkai15/vscode-aem-sync/blob/master/README.md",
   "main": "./src/extension",
   "contributes": {
     "configuration": {
