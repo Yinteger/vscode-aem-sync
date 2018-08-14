@@ -10,8 +10,10 @@ var Queue = require("./queue.js");
 // your extension is activated the very first time the command is executed
 function activate(context) {
     var config = vscode.workspace.getConfiguration('aemsync');
-    var host = config.get("host");
-    var port = config.get("port");
+    var host = config.get("host"); //Host to connect to
+    var port = config.get("port"); //Port to connect to
+    var username = config.get("username"); //Username to connect with
+    var password = config.get("password"); //Password to connect with
     var timeout;
     var statusDisposable;
     var queue = new Queue();//Queue of files that need to be synced
@@ -52,7 +54,7 @@ function activate(context) {
             output.appendLine("Attempting to sync " + queueItems.length + " item(s) to AEM");
             console.log("Syncing queue to AEM", queueItems);
             packager.buildPackage(queueItems).then((packagePath) => {
-                Sync.syncPackage(packagePath, host, port, "admin", "admin").then(() => {
+                Sync.syncPackage(packagePath, host, port, username, password).then(() => {
                     statusDisposable.dispose();
                     console.log("Queue synced successfully");
                     queueItems.forEach((queueItem) => {

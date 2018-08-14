@@ -4,7 +4,7 @@ const fs = require('fs');
 const http = require('http');
 
 class Sync {
-    syncPackage(packagePath, host, port, username, password) {
+    syncPackage(packagePath, hostname, port, username, password) {
         return new Promise((resolve, reject) => {
             console.log(packagePath);
             fs.readFile(packagePath, function (err, fileBuffer) {
@@ -21,12 +21,12 @@ class Sync {
     
                 //File Contents to body
                 const options = {
-                    hostname: "localhost",
-                    port: 4502,
+                    hostname,
+                    port,
                     encoding: null,
                     path: PACKAGEMGR_PATH,
                     method: "POST",
-                    auth: "admin:admin",
+                    auth: username + ":" + password,
                     headers: {
                         'content-type': 'multipart/form-data; boundary=--------------------------553807080757934961515820',
                         'content-length': Buffer.byteLength(body),

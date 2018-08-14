@@ -3,7 +3,7 @@
   "displayName": "AEM-Sync",
   "description": "Sync changes to AEM automatically (Alpha release)",
   "version": "0.1.0",
-  "publisher": "yuniyasha",
+  "publisher": "Yinkai15",
   "preview": true,
   "keywords": [
     "aem",
@@ -31,17 +31,22 @@
         "aemsync.host": {
           "type": "string",
           "default": "localhost",
-          "description": "The target AEM server to sync changes to (Defaults to http://127.0.0.1:4502)"
+          "description": "The hostname/ip to connect to AEM with (Defaults to localhost)"
         },
         "aemsync.port": {
           "type": "number",
           "default": 4502,
-          "description": "The Port AEM server is running on"
+          "description": "The port to connect to AEM with (Defaults to 4502)"
         },
-        "aemsync.path": {
+        "aemsync.username": {
           "type": "string",
-          "default": false,
-          "description": "The path to watch for file changes for (Defaults to jcr_root dirs that are detected)"
+          "default": "admin",
+          "description": "The username to use to connect to AEM (Defaults to admin)"
+        },
+        "aemsync.password": {
+          "type": "string",
+          "default": "admin",
+          "description": "The password to use to connect to AEM (Defaults to admin)"
         }
       }
     },
@@ -82,6 +87,10 @@
     "eslint": "^4.11.0",
     "@types/node": "^7.0.43",
     "@types/mocha": "^2.2.42"
+  },
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/Yinkai15/vscode-aem-sync.git"
   },
   "dependencies": {
     "archiver": "^2.1.1",
