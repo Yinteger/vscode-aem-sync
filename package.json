@@ -2,7 +2,7 @@
   "name": "aemsync",
   "displayName": "AEM Sync",
   "description": "Sync file changes to AEM automatically",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "publisher": "Yinkai15",
   "preview": true,
   "keywords": [
