@@ -31,6 +31,9 @@ The ability to select and sync specific folders/files from the Explorer Context 
 #### Maven support
 Detect Maven configs and sync the Backend Java changes with AEM.
 
+## Installation
+You can install this extension in Visual Studio Code by searching for "AEM Sync" in the Extensions Marketplace inside VSCode, or clicking install from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=Yinkai15.aemsync).
+
 ## Configuration
 This extension can be configured for your environment by using the Visual Studio Code Settings Editor.  Currently, you can configure these properties:
 * Host
