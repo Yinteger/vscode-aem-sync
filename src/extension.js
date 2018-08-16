@@ -18,6 +18,7 @@ class Extension {
         this.port = null;
         this.username = null;
         this.password = null;
+        this.syncDelay = null;
     }
 
     activate(context) {
@@ -26,6 +27,7 @@ class Extension {
         this.port = config.get("port"); //Port to connect to
         this.username = config.get("username"); //Username to connect with
         this.password = config.get("password"); //Password to connect with
+        this.syncDelay = config.get("syncDelay"); //Delay between a file change and syncing
     
         //Create output log
         this.output.appendLine("AEM Sync started... Searching for jcr_root");
@@ -58,18 +60,11 @@ class Extension {
         });
     
         console.log('AEM-Sync now running targetting ', this.host);
-    
-        // The command has been defined in the package.json file
-        // Now provide the implementation of the command with  registerCommand
-        // The commandId parameter must match the command field in package.json
-        let disposable = vscode.commands.registerCommand('extension.sayHello', function () {
-            // The code you place here will be executed every time your command is executed
-    
-            // Display a message box to the user
-            vscode.window.showInformationMessage('Hello World!');
-        });
-    
-        context.subscriptions.push(disposable);
+    }
+
+    deactivate () {
+        watcher.stop();
+        this.output.appendLine("AEM Sync deactivated; stopping file watchers (Syncs in progress will continue)");
     }
 
     onFileChange (fullPath, eventType) {
@@ -91,7 +86,7 @@ class Extension {
         //Set a timeout so multiple changes around the sametime happen in one sync
         this.timeout = setTimeout(() => {
             this.syncQueueToAEM();
-        }, 1000);
+        }, this.syncDelay);
     }
 
     syncQueueToAEM () {
@@ -151,8 +146,6 @@ class Extension {
 var extension = new Extension();
 
 exports.activate = extension.activate.bind(extension);
-
-// this method is called when your extension is deactivated
-function deactivate() {
-}
-exports.deactivate = deactivate;
+exports.deactivate = extension.deactivate.bind(extension);
+vscode.commands.registerCommand('aemsync.start', extension.activate.bind(extension));
+vscode.commands.registerCommand("aemsync.stop", extension.deactivate.bind(extension));

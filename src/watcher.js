@@ -33,6 +33,7 @@ class Watcher extends EventEmitter {
                                 console.log("Now watching ", dir, " folder");
                             }
                         });
+                        this.watching = true;
                         resolve(paths);
                     });
                 });
@@ -41,7 +42,10 @@ class Watcher extends EventEmitter {
     }
     //Stops watching the JCR root directories
     stop () {
-
+        this.watchers.forEach((watcher) => {
+            watcher.close();
+        });
+        this.watching = false;
     }
 };
 

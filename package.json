@@ -1,8 +1,8 @@
 {
   "name": "aemsync",
-  "displayName": "AEM-Sync",
-  "description": "Sync changes to AEM automatically (Alpha release)",
-  "version": "0.1.2",
+  "displayName": "AEM Sync",
+  "description": "Sync file changes to AEM automatically",
+  "version": "0.1.3",
   "publisher": "Yinkai15",
   "preview": true,
   "keywords": [
@@ -11,15 +11,13 @@
   ],
   "icon": "icon.jpg",
   "engines": {
-    "vscode": "^1.24.0"
+    "vscode": "^1.0.0"
   },
   "categories": [
     "Other"
   ],
   "activationEvents": [
-    "onCommand:aemsync.sayHello",
-    "workspaceContains:**/jcr_root",
-    "*"
+    "workspaceContains:**/jcr_root/**"
   ],
   "homepage": "https://github.com/Yinkai15/vscode-aem-sync/blob/master/README.md",
   "main": "./src/extension",
@@ -31,22 +29,27 @@
         "aemsync.host": {
           "type": "string",
           "default": "localhost",
-          "description": "The hostname/ip to connect to AEM with (Defaults to localhost)"
+          "description": "The hostname/ip to connect to AEM with"
         },
         "aemsync.port": {
           "type": "number",
           "default": 4502,
-          "description": "The port to connect to AEM with (Defaults to 4502)"
+          "description": "The port to connect to AEM with"
         },
         "aemsync.username": {
           "type": "string",
           "default": "admin",
-          "description": "The username to use to connect to AEM (Defaults to admin)"
+          "description": "The username to use to connect to AEM"
         },
         "aemsync.password": {
           "type": "string",
           "default": "admin",
-          "description": "The password to use to connect to AEM (Defaults to admin)"
+          "description": "The password to use to connect to AEM"
+        },
+        "aemsync.syncDelay": {
+          "type": "number",
+          "default": 1000,
+          "description": "The delay between changing a file and syncing, used for groupping up multiple changes into a single sync"
         }
       }
     },
@@ -58,23 +61,37 @@
       {
         "command": "aemsync.syncToAEM",
         "title": "Sync file to AEM"
+      },
+      {
+        "command": "aemsync.start",
+        "title": "Enable AEM Sync"
+      },
+      {
+        "command": "aemsync.stop",
+        "title": "Disable AEM Sync"
       }
     ],
     "menus": {
-      "commandPalette": [{
-        "command": "aemsync.syncFromAEM",
-        "when": "resourceFilename == thisshouldneverexist"
-      }, {
-        "command": "aemsync.syncToAEM",
-        "when": "resourceFilename == thisshouldneverexist"
-      }],
-      "explorer/context": [{
-        "group": "aemsync",
-        "command": "aemsync.syncFromAEM"
-      }, {
-        "group": "aemsync",
-        "command": "aemsync.syncToAEM"
-      }]
+      "commandPalette": [
+        {
+          "command": "aemsync.syncFromAEM",
+          "when": "resourceFilename == thisshouldneverexist"
+        },
+        {
+          "command": "aemsync.syncToAEM",
+          "when": "resourceFilename == thisshouldneverexist"
+        }
+      ],
+      "explorer/context": [
+        {
+          "group": "aemsync",
+          "command": "aemsync.syncFromAEM"
+        },
+        {
+          "group": "aemsync",
+          "command": "aemsync.syncToAEM"
+        }
+      ]
     }
   },
   "scripts": {
@@ -89,8 +106,8 @@
     "@types/mocha": "^2.2.42"
   },
   "repository": {
-      "type": "git",
-      "url": "https://github.com/Yinkai15/vscode-aem-sync.git"
+    "type": "git",
+    "url": "https://github.com/Yinkai15/vscode-aem-sync.git"
   },
   "dependencies": {
     "archiver": "^2.1.1",
