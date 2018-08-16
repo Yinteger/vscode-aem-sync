@@ -8,7 +8,7 @@ const os = require('os')
 //Packages up changes and deploys to AEM
 class Packager {
     //Takes in File Location(s) and builds a single deployable aem package
-    buildPackage(paths) {
+    buildPackage(operations) {
         return new Promise((resolve, reject) => {
             try {
                 //Build an AEM Package! Yay!
@@ -22,17 +22,20 @@ class Packager {
                 archive.directory(__dirname + '/base_package/', false);
                 
                 //Build Filter.xml and add it
-                archive.append(Buffer.from(this.buildFilter(paths)), {name: "META-INF/vault/filter.xml"});
+                archive.append(Buffer.from(this.buildFilter(operations)), {name: "META-INF/vault/filter.xml"});
 
                 //Add all the actual files
-                paths.forEach((_path) => {
-                    archive.file(_path, {name: "jcr_root" + this.convertPathToAem(_path)});
+                operations.forEach((operation) => {
+                    archive.file(operation.path, {name: "jcr_root" + this.convertPathToAem(operation.path)});
 
-                    var dir = path.dirname(_path);
+                    var dir = path.dirname(operation.path);
                     while (dir) {
                         if (fs.existsSync(dir + "\\.content.xml") && contentXMLs.indexOf(dir + "\\.content.xml") === -1) {
                             contentXMLs.push(dir + "\\.content.xml");
-                            archive.file(dir + "\\.content.xml", {name: "jcr_root" + this.convertPathToAem(dir + "\\.content.xml")});
+                            //If the operation was delete, just omit from package
+                            if (operation.type != "delete") {
+                                archive.file(dir + "\\.content.xml", {name: "jcr_root" + this.convertPathToAem(dir + "\\.content.xml")});
+                            }
                         }
                         var splitDir = dir.split("\\");
                         dir = splitDir.slice(0, splitDir.length - 1).join("\\");
@@ -51,11 +54,11 @@ class Packager {
         });
     }
     //Build the filter.xml content
-    buildFilter(paths) {
+    buildFilter(operations) {
         var filters = [];
 
-        paths.forEach((path) => {
-            filters.push('<filter root="' + this.convertPathToAem(path) + '"/>');
+        operations.forEach((operation) => {
+            filters.push('<filter root="' + this.convertPathToAem(operation.path) + '"/>');
         });
         return FILTER_PREFIX + filters.join("") + FILTER_SUFFIX;
     }

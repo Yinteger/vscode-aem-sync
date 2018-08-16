@@ -21,7 +21,14 @@ class Watcher extends EventEmitter {
                             if (path.basename(dir) === "jcr_root") {
                                 paths.push(dir);
                                 this.watchers.push(fs.watch(dir, {'recursive': true}, (eventType, fileName) => {
-                                    this.emit(eventType, fileName, path.join(dir, fileName.toString()));
+                                    var fullPath = path.join(dir, fileName.toString());
+                                    if ((eventType === "change" && !fs.lstatSync(fullPath).isDirectory()) || eventType === "rename") {
+                                        if (eventType === "rename") {
+                                            //Check if file exists or not
+                                            eventType = fs.existsSync(fullPath) ? "add" : "delete";
+                                        }
+                                        this.emit(eventType, fileName, fullPath);
+                                    }
                                 }));
                                 console.log("Now watching ", dir, " folder");
                             }

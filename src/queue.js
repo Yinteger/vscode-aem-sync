@@ -1,22 +1,25 @@
 class Queue {
     constructor () {
-        this.items = [];
+        this.operations = [];
+        this.paths = {}; //Quick look up for paths in queue
     }
 
     //Return & Empty the queue
     empty () {
-        var items = this.items.splice(0);
-        this.items = [];
-        return items;
+        var operations = this.operations.splice(0);
+        this.operations = [];
+        this.paths = {};
+        return operations;
     }
 
-    //Add Item to the Queue
-    addItem (item) {
-        this.items.push(item);
+    //Add (file) operation to the Queue
+    addOperation (path, operation) {
+        this.operations.push({path, type: operation});
+        this.paths[path] = true;
     }
 
-    has (item) {
-        return this.items.indexOf(item) > -1;
+    has (path) {
+        return this.paths[path] ? true : false;
     }
 }
 
