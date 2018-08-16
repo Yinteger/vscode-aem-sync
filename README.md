@@ -1,6 +1,6 @@
 # AEM Sync README
 
-AEM-Sync is an extension for Visual Studio Code to automatically sync changes to files to a Adobe Experience Manager server.  It is intended to be used for local development.  
+AEM Sync is an extension for Visual Studio Code to automatically sync changes to files to a Adobe Experience Manager server.  It is intended to be used for local development.  
 
 ## This is a preview extension
 Currently only being tested by a dev team using Windows 10 + AEM 6.1.  If you use this, please let me know how it works with your set up, OS, and AEM version!
@@ -11,7 +11,7 @@ This extension does NOT make use of Filevault.  It entirely relies on Restful AP
 ## Supported features
 
 ### File change syncing
-AEM-Sync will look for and detect jcr_root folders, and begin watching all the folders and files in them for changes using fs.watch.   When a change is detected,  it will build an AEM Package and upload it to your AEM Server via a Restful API.  You will notice a sync.zip package in your Package Manager, which will always contain the latest sync changes.  There will only ever be one sync.zip file, and it's safe to delete.
+AEM Sync will look for and detect jcr_root folders, and begin watching all the folders and files in them for changes using fs.watch.   When a change is detected,  it will build an AEM Package and upload it to your AEM Server via a Restful API.  You will notice a sync.zip package in your Package Manager, which will always contain the latest sync changes.  There will only ever be one sync.zip file, and it's safe to delete.
 
 ### Sync output log
 
@@ -24,10 +24,12 @@ In the taskbar at the bottom of Visual Studio, you will see a status appear whil
 
 ![alt text](https://github.com/Yinkai15/vscode-aem-sync/blob/master/statusexample.gif?raw=true "AEM Sync output example gif")
 
-### Features coming soon
-The ability to Sync To/From AEM on specific files/folders via a Context Menu in the Explorer View will be coming shortly for the 'full release' of this extension.
-
-As well, I am hoping to include Maven support at some point so Java-related changes can be pushed to AEM automatically as well from VS Code.
+### Future features
+A list of some features I'd like to integrate in the future.  If you're feeling awesome and want to contribute, these features would be awesome.
+#### Manual Bidirection Sync
+The ability to select and sync specific folders/files from the Explorer Context menu to and from AEM.
+#### Maven support
+Detect Maven configs and sync the Backend Java changes with AEM.
 
 ## Configuration
 This extension can be configured for your environment by using the Visual Studio Code Settings Editor.  Currently, you can configure these properties:
