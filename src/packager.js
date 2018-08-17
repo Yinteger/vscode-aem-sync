@@ -67,7 +67,7 @@ class Packager {
         if (path.indexOf("jcr_root\\") > -1) {
             return "/" + path.split('jcr_root\\')[1].replace(/\\/g, "/");
         } else if (path.indexOf("jcr_root/") > -1) {
-            return "/" + path.split("jcr_root/")[1].replace(/\\/g, "/");
+            return "/" + path.split("jcr_root/")[1];
         }
         
     }
