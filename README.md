@@ -3,7 +3,8 @@
 AEM Sync is an extension for Visual Studio Code to automatically sync changes to files to a Adobe Experience Manager server.  It is intended to be used for local development.  
 
 ## This is a preview extension
-Currently only being tested by a dev team using Windows 10 + AEM 6.1.  If you use this, please let me know how it works with your set up, OS, and AEM version!
+Currently only being tested by a dev team using Windows 10, MacOS High Sierra, and AEM 6.1.
+If you use this, please let me know how it works with your set up, OS, and AEM version!
 
 ## Dependencies
 This extension does NOT make use of Filevault.  It entirely relies on Restful API's that AEM provides.  Therefore, these API's must be enabled for this extension to work.  They should be enabled by default on local author development servers.
