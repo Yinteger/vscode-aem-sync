@@ -4,6 +4,7 @@ const path = require('path');
 const FILTER_PREFIX = '<?xml version="1.0" encoding="UTF-8"?><workspaceFilter version="1.0">';
 const FILTER_SUFFIX = '</workspaceFilter>';
 const os = require('os')
+const utils = require("./utils.js");
 
 //Packages up changes and deploys to AEM
 class Packager {
@@ -26,15 +27,22 @@ class Packager {
 
                 //Add all the actual files
                 operations.forEach((operation) => {
-                    archive.file(operation.path, {name: "jcr_root" + this.convertPathToAem(operation.path)});
+                    if (fs.existsSync(operation.path)) {
+                        archive.file(operation.path, {name: "jcr_root" + utils.convertPathToAem(operation.path)});
+                        if (fs.lstatSync(operation.path).isDirectory()) {
+                            //If directory, recursively add all children to package as well
+                            this.addDirectoryToPackage(archive, operation.path);
+                        }
+                    }                        
 
+                    //Add all the content.xml files leading up to it
                     var dir = path.dirname(operation.path);
                     while (dir) {
                         if (fs.existsSync(dir + "\\.content.xml") && contentXMLs.indexOf(dir + "\\.content.xml") === -1) {
                             contentXMLs.push(dir + "\\.content.xml");
                             //If the operation was delete, just omit from package
                             if (operation.type != "delete") {
-                                archive.file(dir + "\\.content.xml", {name: "jcr_root" + this.convertPathToAem(dir + "\\.content.xml")});
+                                archive.file(dir + "\\.content.xml", {name: "jcr_root" + utils.convertPathToAem(dir + "\\.content.xml")});
                             }
                         }
                         var splitDir = dir.split("\\");
@@ -58,23 +66,25 @@ class Packager {
         var filters = [];
 
         operations.forEach((operation) => {
-            filters.push('<filter root="' + this.convertPathToAem(operation.path) + '"/>');
+            filters.push('<filter root="' + utils.convertPathToAem(operation.path) + '"/>');
         });
         return FILTER_PREFIX + filters.join("") + FILTER_SUFFIX;
-    }
-    //Clean a system path and convert to AEM Path
-    convertPathToAem(path) {
-        if (path.indexOf("jcr_root\\") > -1) {
-            return "/" + path.split('jcr_root\\')[1].replace(/\\/g, "/");
-        } else if (path.indexOf("jcr_root/") > -1) {
-            return "/" + path.split("jcr_root/")[1].replace(/\\/g, "/");
-        }
-        
     }
     //Clear the package file from the system
     clearPackage () {
         fs.unlink(__dirname + '/sync.zip', (err) => {
             //Do something...
+        });
+    }
+    addDirectoryToPackage (archive, directory) {
+        fs.readdirSync(directory).forEach(file => {
+            file = path.join(directory, file);
+            console.log(file);
+            archive.file(file, {name: "jcr_root" + utils.convertPathToAem(file)});
+            if (fs.lstatSync(file).isDirectory()) {
+                //If directory, recursively add all children to package as well
+                this.addDirectoryToPackage(archive, file);
+            }
         });
     }
 }

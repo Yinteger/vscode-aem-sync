@@ -45,7 +45,7 @@ class Sync {
                         //Check for a specific string since AEM returns 200 even on errors
                         if (responseBody.indexOf('Package imported.') > -1) {
                             console.log(responseBody);
-                            resolve();
+                            resolve(responseBody);
                         } else {
                             console.error("Error importing Package to AEM: \r\n", responseBody);
                             reject("Error importing package into AEM: " + responseBody);

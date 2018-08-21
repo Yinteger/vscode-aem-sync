@@ -1,8 +1,17 @@
 # Change Log
 All notable changes to the "aem-sync" extension will be documented in this file.
 
+## [0.2.2]
+- Fixed an issue with syncing directories to AEM (It would sync the dir but remove all the files in AEM)
+- Changed the output log to use the change log sent back from AEM for better accuracy (Over a custom built one)
+- Got the Sync to AEM explorer context menu item working
+- Changed the names of the Enable/Disable commands to better represent what they do
+
+## [0.2.1]
+- Unix support
+
 ## [0.1.3]
-Added new config property for the delay because a file change and a sync.  As well, added commands to start/stop the sync extension.
+- Added new config property for the delay because a file change and a sync.  As well, added commands to start/stop the sync extension.
 
 ## [0.1.2]
 - Added support for delete, add, rename, move file operations to be synced to AEM

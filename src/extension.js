@@ -1,10 +1,13 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
+const jcrCrawler = require("./jcrCrawler");
 var watcher = require("./watcher.js");
 var Sync = require("./sync.js");
 var packager = require("./packager.js");
 var Queue = require("./queue.js");
+const fs = require('fs');
+const utils = require("./utils.js");
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -50,13 +53,13 @@ class Extension {
     
         //Add file watcher event listeners
         watcher.on("add", (file, fullPath) => {
-            this.onFileChange(fullPath, "add");
+            this._addNodeToQueue(fullPath, "add");
         });
         watcher.on("delete", (file, fullPath) => {
-            this.onFileChange(fullPath, "delete");
+            this._addNodeToQueue(fullPath, "delete");
         });
         watcher.on("change", (file, fullPath) => {
-            this.onFileChange(fullPath, "change");
+            this._addNodeToQueue(fullPath, "change");
         });
     
         console.log('AEM-Sync now running targetting ', this.host);
@@ -67,7 +70,7 @@ class Extension {
         this.output.appendLine("AEM Sync deactivated; stopping file watchers (Syncs in progress will continue)");
     }
 
-    onFileChange (fullPath, eventType) {
+    _addNodeToQueue (fullPath, eventType) {
         console.log("File operation on ", fullPath, " with type ", eventType);
 
         //Show a Syncing to AEM message to user
@@ -95,33 +98,35 @@ class Extension {
         //Debug
         //queueItems = ["c:\\projects\\aem\\alc\\ui.apps\\src\\main\\content\\jcr_root\\apps\\alc\\components\\accordion\\accordion.html", "c:\\projects\\aem\\alc\\ui.apps\\src\\main\\content\\jcr_root\\apps\\alc\\components\\accordion\\accordion.js", "c:\\projects\\aem\\alc\\ui.apps\\src\\main\\content\\jcr_root\\apps\\alc\\components\\alert\\clientlibs\\js\\alert.js"];
         
-        this.output.appendLine("Attempting to sync " + queueItems.length + " item(s) to AEM");
+        this.output.appendLine("Attempting to sync to AEM");
         console.log("Syncing queue to AEM", queueItems);
         //Build the package
         packager.buildPackage(queueItems).then((packagePath) => {
             //Sync the package to AEM
-            Sync.syncPackage(packagePath, this.host, this.port, this.username, this.password).then(() => {
+            Sync.syncPackage(packagePath, this.host, this.port, this.username, this.password).then((response) => {
                 //Dispose the 'syncing' message
                 this.statusDisposable.dispose();
 
                 console.log("Queue synced successfully");
-                this.output.appendLine("Synced " + queueItems.length + " item(s) to AEM");
+                //Grab changeset from response
+                this.output.append(response.split("Importing content...")[1].split("Package imported")[0]);
+                //this.output.appendLine("Synced " + queueItems.length + " item(s) to AEM");
                 //List each change into the log
-                queueItems.forEach((queueItem) => {
-                    var operString = "";
-                    switch (queueItem.type) {
-                        case "delete":
-                            operString = "D";
-                            break;
-                        case "change":
-                            operString = "M";
-                            break;
-                        case "add":
-                            operString = "A";
-                            break;
-                    }
-                    this.output.appendLine(operString + " " + queueItem.path);
-                });
+                // queueItems.forEach((queueItem) => {
+                //     var operString = "";
+                //     switch (queueItem.type) {
+                //         case "delete":
+                //             operString = "D";
+                //             break;
+                //         case "change":
+                //             operString = "M";
+                //             break;
+                //         case "add":
+                //             operString = "A";
+                //             break;
+                //     }
+                //     this.output.appendLine(operString + " " + queueItem.path);
+                // });
 
                 //Notify user of the success
                 vscode.window.setStatusBarMessage('Changes synced to AEM', 3000);
@@ -141,6 +146,37 @@ class Extension {
             console.error(error);
         });
     }
+
+    syncNodeToAEM (context) {
+        this._addNodeToQueue(context.fsPath, "overwrite");
+    }
+
+    syncNodeFromAEM (context) {
+
+    }
+
+    _addFileToQueueold(path, operationType, addAllChildren) {
+        //Add to queue
+        if (!this.queue.has(path)) { //TODO this may cause issues when multiple types of operations happen on a single file (change, then delete -- Only first operation gets)
+            this.queue.addOperation(path, operationType);   
+        }
+
+        if (addAllChildren && fs.lstatSync(path).isDirectory()) {
+            console.log("Trying to sync a directory");
+            jcrCrawler.getTree(utils.convertPathToAem(path), this.host, this.port, this.username, this.password).then((jcrTree) => {
+                console.log(jcrTree);
+                //Start comparing Local file system against the tree to see what needs to be synced (if anything)
+            }, (err) => {
+                console.error(err);
+            });
+            //Is a directory, add all of it's children to the queue
+
+
+            //Get Children
+
+            //Look through children and start recursion
+        }
+    }
 }
 
 var extension = new Extension();
@@ -149,3 +185,4 @@ exports.activate = extension.activate.bind(extension);
 exports.deactivate = extension.deactivate.bind(extension);
 vscode.commands.registerCommand('aemsync.start', extension.activate.bind(extension));
 vscode.commands.registerCommand("aemsync.stop", extension.deactivate.bind(extension));
+vscode.commands.registerCommand("aemsync.syncToAEM",extension.syncNodeToAEM.bind(extension));

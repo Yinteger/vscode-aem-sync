@@ -2,7 +2,7 @@
   "name": "aemsync",
   "displayName": "AEM Sync",
   "description": "Sync file changes to AEM automatically",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "publisher": "Yinkai15",
   "preview": true,
   "keywords": [
@@ -64,11 +64,11 @@
       },
       {
         "command": "aemsync.start",
-        "title": "Enable AEM Sync"
+        "title": "Enable AEM Sync file watcher"
       },
       {
         "command": "aemsync.stop",
-        "title": "Disable AEM Sync"
+        "title": "Disable AEM Sync file watcher"
       }
     ],
     "menus": {
