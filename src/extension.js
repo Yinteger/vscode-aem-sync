@@ -148,12 +148,31 @@ class Extension {
     }
 
     syncNodeToAEM (context) {
-        this._addNodeToQueue(context.fsPath, "overwrite");
+        vscode.window.showWarningMessage("Syncing TO AEM will overwrite nodes in the JCR, are you sure you want to continue? \r\n Syncing to " + utils.convertPathToAem(context.fsPath), "Yes", "No").then((response) => {
+            if (response === "Yes") {
+                this._addNodeToQueue(context.fsPath, "overwrite");
+            }
+        });
     }
 
     syncNodeFromAEM (context) {
-
+        //Get tree
+        vscode.window.showWarningMessage("Syncing FROM AEM will overwrite local files, are you sure you want to continue? \r\n Syncing from " + utils.convertPathToAem(context.fsPath), "Yes", "No").then((response) => {
+            if (response === "Yes") {
+                console.log(context);
+                jcrCrawler.getTree(utils.convertPathToAem(context.fsPath), this.host, this.port, this.username, this.password).then((nodes) => {
+                    //Traverse tree and compare to local file system
+                    this.importNode(nodes, context.fsPath);
+                }, (err) => {
+                    console.error("error crawling jcr tree");
+                });
+            }
+        });
     }
+
+    importNode (node, systemPath) {
+
+    } 
 
     _addFileToQueueold(path, operationType, addAllChildren) {
         //Add to queue
@@ -186,3 +205,4 @@ exports.deactivate = extension.deactivate.bind(extension);
 vscode.commands.registerCommand('aemsync.start', extension.activate.bind(extension));
 vscode.commands.registerCommand("aemsync.stop", extension.deactivate.bind(extension));
 vscode.commands.registerCommand("aemsync.syncToAEM",extension.syncNodeToAEM.bind(extension));
+vscode.commands.registerCommand("aemsync.syncFromAEM",extension.syncNodeFromAEM.bind(extension));

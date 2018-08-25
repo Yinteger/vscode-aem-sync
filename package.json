@@ -55,12 +55,12 @@
     },
     "commands": [
       {
-        "command": "aemsync.syncFromAEM",
-        "title": "Sync file from AEM"
-      },
-      {
         "command": "aemsync.syncToAEM",
         "title": "Sync file to AEM"
+      },
+      {
+        "command": "aemsync.syncFromAEM",
+        "title": "Sync file from AEM"
       },
       {
         "command": "aemsync.start",
@@ -74,11 +74,11 @@
     "menus": {
       "commandPalette": [
         {
-          "command": "aemsync.syncFromAEM",
+          "command": "aemsync.syncToAEM",
           "when": "resourceFilename == thisshouldneverexist"
         },
         {
-          "command": "aemsync.syncToAEM",
+          "command": "aemsync.syncFromAEM",
           "when": "resourceFilename == thisshouldneverexist"
         }
       ],

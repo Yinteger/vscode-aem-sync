@@ -9,7 +9,7 @@ class JCRCrawler {
             const req = http.request({
                 host,
                 port,
-                path: path + ".02.json",
+                path: path + ".03.json",
                 method: "GET",
                 auth: username + ":" + password
             }, (resp) => {
