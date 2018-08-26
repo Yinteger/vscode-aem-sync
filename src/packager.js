@@ -23,16 +23,27 @@ class Packager {
                 archive.directory(__dirname + '/base_package/', false);
                 
                 //Build Filter.xml and add it
-                archive.append(Buffer.from(this.buildFilter(operations)), {name: "META-INF/vault/filter.xml"});
+                var filterString = this.buildFilter(operations);
+                console.log(filterString);  
+                archive.append(Buffer.from(filterString), {name: "META-INF/vault/filter.xml"});
 
                 //Add all the actual files
                 operations.forEach((operation) => {
                     if (fs.existsSync(operation.path)) {
+                        var aemPath = utils.convertPathToAem(operation.path);
+                        var splitAEMPath = aemPath.split("/");
                         archive.file(operation.path, {name: "jcr_root" + utils.convertPathToAem(operation.path)});
+                        if (operation.path.indexOf(".content.xml") > -1) {
+                            contentXMLs.push( path.dirname(operation.path) + "\\.content.xml");
+                        }
                         if (fs.lstatSync(operation.path).isDirectory()) {
                             //If directory, recursively add all children to package as well
                             this.addDirectoryToPackage(archive, operation.path);
                         }
+                        // else if (splitAEMPath[splitAEMPath.length - 1] === ".content.xml") {
+                        //     //If it's the .content.xml, sync entire node
+                        //     this.addDirectoryToPackage(archive, operation.path.replace("content.xml", ""));
+                        // }
                     }                        
 
                     //Add all the content.xml files leading up to it
@@ -66,7 +77,14 @@ class Packager {
         var filters = [];
 
         operations.forEach((operation) => {
-            filters.push('<filter root="' + utils.convertPathToAem(operation.path) + '"/>');
+            var aemPath = utils.convertPathToAem(operation.path);
+            var aemPathSplit = aemPath.split("/");
+            if (aemPathSplit[aemPathSplit.length - 1] === ".content.xml") {
+                //If changing the .content.xml file, we need to sync the entire node
+                filters.push('<filter root="' + aemPath.replace("/.content.xml", "") + '"><include pattern="' + aemPath.replace("/.content.xml", "")  + '" /></filter>');
+            } else {
+                filters.push('<filter root="' + aemPath.replace(".xml", "").replace("_cq_", "cq:") + '"/>');
+            }
         });
         return FILTER_PREFIX + filters.join("") + FILTER_SUFFIX;
     }
