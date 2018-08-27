@@ -27,7 +27,8 @@ class Utils {
                 };
     
                 //If XML file, look into to it to see if it's a node or not (Nodes we must strip .xml from the path)
-                if (nodeName != ".content.xml" && nodeName.indexOf(".xml") > -1) {
+                //@TODO: This method won't work on deletion of nodes since file no longer exists... 
+                if (fs.existsSync(path) && nodeName != ".content.xml" && nodeName.indexOf(".xml") > -1) {
                     var nodeData = fs.readFileSync(path);
                     if (nodeData.indexOf("<jcr:root ") > -1) {
                         nodeName = nodeName.replace(".xml", "");
