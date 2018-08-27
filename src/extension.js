@@ -152,7 +152,7 @@ class Extension {
     }
 
     syncNodeFromAEM (context) {
-
+        vscode.window.showWarningMessage("Syncing from AEM not supported yet");
     }
 
     _addFileToQueueold(path, operationType, addAllChildren) {
@@ -186,3 +186,4 @@ exports.deactivate = extension.deactivate.bind(extension);
 vscode.commands.registerCommand('aemsync.start', extension.activate.bind(extension));
 vscode.commands.registerCommand("aemsync.stop", extension.deactivate.bind(extension));
 vscode.commands.registerCommand("aemsync.syncToAEM",extension.syncNodeToAEM.bind(extension));
+vscode.commands.registerCommand("aemsync.syncFromAEM",extension.syncNodeFromAEM.bind(extension));
