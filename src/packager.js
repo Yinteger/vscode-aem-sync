@@ -100,7 +100,7 @@ class Packager {
                 var newAemPath = aemPath.replace("/.content.xml", "");
                 if (newAemPath === "") {
                     //Root
-                    newAemPath = "/";
+                    newAemPath = "/*";
                 }
                 var filterString = '<filter root="' + newAemPath + '">';
                 //Build an exclude list manually... This is to fix an issue with pushing up the content.xml emptying all other files.. Doing include on the node only fixes it except for root nodes
