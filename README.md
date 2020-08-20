@@ -1,3 +1,6 @@
+# No Longer being maintained #
+As I no longer work with AEM or have access to AEM software, I am no longer maintaining this project.  If you would like to fork or contribute, I can assist with getting the Visual Studio Code store permissions transfered over.  
+
 # AEM Sync README
 
 AEM Sync is an extension for Visual Studio Code to automatically sync changes to files to a Adobe Experience Manager server.  It is intended to be used for local development.  
